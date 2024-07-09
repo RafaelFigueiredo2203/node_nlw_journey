@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",             // Versão do ECMAScript alvo
+    "module": "Node16",           // Sistema de módulos
+    "lib": ["ES2023"],              // Bibliotecas padrão
+    "allowJs": true,                // Permite compilação de arquivos .js
+    "checkJs": false,               // Não verifica arquivos .js
+    "jsx": "react",                 // Suporte ao JSX
+    "declaration": true,            // Gera arquivos .d.ts
+    "sourceMap": true,              // Gera mapas de origem
+    "outDir": "./dist",             // Diretório de saída
+    "rootDir": "./src",             // Diretório raiz
+    "strict": true,                 // Ativa todas as verificações estritas
+    "esModuleInterop": true,        // Interoperabilidade entre ES Modules e CommonJS
+    "skipLibCheck": true,           // Pula checagem de arquivos de definição de tipos
+    "forceConsistentCasingInFileNames": true // Força nomes de arquivos consistentes
+  },
+}
