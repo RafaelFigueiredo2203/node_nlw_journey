@@ -8,44 +8,35 @@ import { dayjs } from '../lib/dayjs';
 import { getMailClient } from "../lib/mail";
 import { prisma } from "../lib/prisma";
 
-export function confirmTrip(app: FastifyInstance){
-  app.withTypeProvider<ZodTypeProvider>().get('/trips/:tripId/confirm',{
+export function createInvite(app: FastifyInstance){
+  app.withTypeProvider<ZodTypeProvider>().post('/trips/:tripId/invites',{
     schema:{
-      params: z.object({
-       tripId:z.string().uuid()
+      params:z.object({
+        tripId: z.string().uuid()
+      }),
+      body: z.object({
+        email:z.string().email()
       })
     }
-  },async (request, reply) => {
-
+  },async (request) => {
     const {tripId} = request.params
+    const {email} = request.body
 
     const trip = await prisma.trip.findUnique({
-      where:{
-        id: tripId,
-      },
-      include:{
-        paticipants:{
-          where:{
-            is_owner: false,
-          }
-        }
-      }
+      where: {id:tripId}
     })
 
     if(!trip){
-      throw new ClientError('Trip not Found')
+      throw new ClientError('Trip not found')
     }
 
-    if(trip.is_confirmed){
-      return reply.redirect(`${env.WEB_BASE_URL}/trips/${tripId}`)
-    }
-
-    await prisma.trip.update({
-      where:{id: tripId},
-      data:{is_confirmed:true}
+    const participant = await prisma.participants.create({
+      data:{
+        email,
+        trip_id:tripId,
+      }
     })
 
-  
     const formattedStartDate = dayjs(trip.starts_at).format('LL')
     const formattedEndDate = dayjs(trip.ends_at).format('LL')
   
@@ -53,8 +44,7 @@ export function confirmTrip(app: FastifyInstance){
   
     const mail = await getMailClient()
 
-    await Promise.all(
-      trip.participants.map(async (participant) => {
+   
         const confirmationLink = `${env.API_BASE_URL}/participants/${participant.id}/confirm`
         const message = await mail.sendMail({
           from: {
@@ -77,11 +67,9 @@ export function confirmTrip(app: FastifyInstance){
           </div>
         `.trim(),
         })
-          console.log(nodemailer.getTestMessageUrl(message))
-      })
-    )
 
-    return reply.redirect(`${env.WEB_BASE_URL}/trips/${tripId}`)
-  },
-)
+        console.log(nodemailer.getTestMessageUrl(message))
+   
+    return {participantId: participant.id }
+  }) 
 }
