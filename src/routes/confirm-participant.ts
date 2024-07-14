@@ -5,7 +5,7 @@ import { env } from "../env";
 import { ClientError } from "../errors/client-error";
 import { prisma } from "../lib/prisma";
 
-export function confirmParticipant(app: FastifyInstance){
+export async function confirmParticipant(app: FastifyInstance){
   app.withTypeProvider<ZodTypeProvider>().get('/participants/:participantId/confirm',{
     schema:{
       params: z.object({
@@ -36,7 +36,7 @@ export function confirmParticipant(app: FastifyInstance){
       data:{is_confirmed: true }
     })
 
-    return reply.redirect(`${env.WEB_BASE_URL}/trips/${tripId}`)
+    return reply.redirect(`${env.WEB_BASE_URL}/trips/${participant.trip_id}`)
   },
 )
 }

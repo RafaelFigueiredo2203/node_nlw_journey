@@ -8,7 +8,7 @@ import { dayjs } from '../lib/dayjs';
 import { getMailClient } from "../lib/mail";
 import { prisma } from "../lib/prisma";
 
-export function confirmTrip(app: FastifyInstance){
+export async function confirmTrip(app: FastifyInstance){
   app.withTypeProvider<ZodTypeProvider>().get('/trips/:tripId/confirm',{
     schema:{
       params: z.object({
@@ -20,12 +20,12 @@ export function confirmTrip(app: FastifyInstance){
     const {tripId} = request.params
 
     const trip = await prisma.trip.findUnique({
-      where:{
+      where: {
         id: tripId,
       },
-      include:{
-        paticipants:{
-          where:{
+      include: {
+        participants: {
+          where: {
             is_owner: false,
           }
         }

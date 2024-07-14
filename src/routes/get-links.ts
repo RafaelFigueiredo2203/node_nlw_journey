@@ -4,20 +4,15 @@ import z from "zod";
 import { ClientError } from "../errors/client-error";
 import { prisma } from "../lib/prisma";
 
-export function getLink(app: FastifyInstance){
+export async function getLink(app: FastifyInstance){
   app.withTypeProvider<ZodTypeProvider>().get('/trips/:tripId/links',{
     schema:{
       params:z.object({
         tripId: z.string().uuid()
       }),
-      body: z.object({
-        title: z.string().min(4),
-        url:  z.string().url(),
-      })
     }
   },async (request) => {
     const {tripId} = request.params
-    const {title,url} = request.body
 
     const trip = await prisma.trip.findUnique({
       where: {id:tripId},

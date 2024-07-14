@@ -8,7 +8,7 @@ import { dayjs } from '../lib/dayjs';
 import { getMailClient } from "../lib/mail";
 import { prisma } from "../lib/prisma";
 
-export function createInvite(app: FastifyInstance){
+export async function createInvite(app: FastifyInstance){
   app.withTypeProvider<ZodTypeProvider>().post('/trips/:tripId/invites',{
     schema:{
       params:z.object({
@@ -30,7 +30,7 @@ export function createInvite(app: FastifyInstance){
       throw new ClientError('Trip not found')
     }
 
-    const participant = await prisma.participants.create({
+    const participant = await prisma.participant.create({
       data:{
         email,
         trip_id:tripId,

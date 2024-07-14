@@ -4,7 +4,7 @@ import z from "zod";
 import { ClientError } from "../errors/client-error";
 import { prisma } from "../lib/prisma";
 
-export function getTripDetails(app: FastifyInstance){
+export async function getTripDetails(app: FastifyInstance){
   app.withTypeProvider<ZodTypeProvider>().get('/trips/:tripId',{
     schema:{
       params:z.object({

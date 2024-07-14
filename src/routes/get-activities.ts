@@ -5,7 +5,7 @@ import { ClientError } from "../errors/client-error";
 import { dayjs } from '../lib/dayjs';
 import { prisma } from "../lib/prisma";
 
-export function getActivities(app: FastifyInstance){
+export async function getActivities(app: FastifyInstance){
   app.withTypeProvider<ZodTypeProvider>().get('/trips/:tripId/activities',{
     schema:{
       params:z.object({

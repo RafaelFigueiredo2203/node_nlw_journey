@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import 'dayjs/locale/pt0br'
+import 'dayjs/locale/pt-br'
 import loalizedFormat from 'dayjs/plugin/localizedFormat'
 
 dayjs.locale('pt-br')
